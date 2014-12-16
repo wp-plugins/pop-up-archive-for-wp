@@ -1,0 +1,19 @@
+@CHARSET "ISO-8859-1";
+.popuparchive_custom_blue_box {
+	background: #F0F9FF;
+	font-size: 13px;
+	border: 1px solid #1166BB;
+	color: #1166BB;
+	margin: 10px 0px 5px 0px;
+	padding: 10px;
+	border-radius: 10px 10px 10px 10px;
+	width: 30%;
+}
+
+.form-table {
+}
+
+.form-table input {
+	border: 1px solid #555;
+
+}
