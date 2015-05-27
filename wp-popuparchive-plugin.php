@@ -3,8 +3,8 @@
 Plugin Name: Pop Up Archive
 Plugin URI: https://github.com/popuparchive/popuparchive-wp
 Description: This plugin will let you embed Pop Up Archive audio files and automatically generated tags into your posts and pages.
-Author: Thomas Crenshaw / Pop Up Archive
-Version: 1.1.0
+Author: Pop Up Archive
+Version: 1.2
 Author URI: https://www.popuparchive.com
 */
 
@@ -50,11 +50,11 @@ if (!class_exists('Popuparchive_WP')) {
         /**
          * Plugin version, used for cache-busting of style and script file references.
          *
-         * @since 1.0.0
+         * @since 1.2
          *
          * @var string
          */
-        public $version = '1.0.0';
+        public $version = '1.2';
 
         /**
          * The name of the plugin.
@@ -90,6 +90,8 @@ if (!class_exists('Popuparchive_WP')) {
          */
         function __construct()
         {
+            // explicitly register ourselves as oEmbed provider just in case it hasn't been done elsewhere.
+            wp_oembed_add_provider( 'https://www.popuparchive.com/tplayer/*', 'https://www.popuparchive.com/oembed' );
             /* fire a hook before the plugin is loaded */
             do_action( 'popuparchive_pre_init' );
             $this->define_constants();
@@ -233,8 +235,18 @@ if (!class_exists('Popuparchive_WP')) {
                 <br />Please verify that you have correctly entered the audio file id, the item id and the collection id</strong></p></div>';                }
             }
 
-            return "<iframe frameborder='0' scrolling='no' seamless='yes' width='508 height='95' name='".$atts['name']."' src='https://www.popuparchive.com/embed_player/".rawurlencode($atts['name'])."/".$atts['audio_file_id']."/".$atts['item_id']."/".$atts['collection_id']."' ></iframe>";
-
+            $html = '';
+            if ($atts['tplayer']) {
+                $oembed_url = 'https://www.popuparchive.com/tplayer/' . $atts['audio_file_id'];
+                $html = wp_oembed_get($oembed_url);
+                return $html;
+            }
+            else {
+                $html = sprintf("<iframe frameborder='0' scrolling='no' seamless='yes' width='508 height='95' name='%s' src='https://www.popuparchive.com/embed_player/%s/%s/%s/%s'></iframe>",
+                    htmlspecialchars($atts['name']), rawurlencode($atts['name']), 
+                    $atts['audio_file_id'], $atts['item_id'], $atts['collection_id']);
+            }
+            return $html;
         }
 
         /**

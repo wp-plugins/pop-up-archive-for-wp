@@ -3,7 +3,7 @@ Contributors: popuparchive
 Tags: audio, speech-to-text, media search, embed player, auto tags
 Requires at least: 3.6
 Tested up to: 3.9
-Stable tag: trunk
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -42,6 +42,9 @@ After saving your settings click the "Connect To Pop Up Archive" link in the "Po
 2. Add media view.
 
 == Changelog ==
+
+= 1.2 =
+* Added tplayer via oEmbed
 
 = 1.1 =
 * Added paging to add media view

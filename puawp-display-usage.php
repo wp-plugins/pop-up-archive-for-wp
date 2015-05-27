@@ -30,11 +30,18 @@
 				<h3><label for="title">Usage and FAQs</label></h3>
 				<div class="inside">
 					<div class="puawp_blue_box">
-						<p><strong>Question: </strong></p>
-						<p><strong>Answer: </strong></p>
+						<p><strong>Question: How can I include the full text of the transcript on my site?</strong></p>
+						<p><strong>Answer:</strong></p>
+                        <p>Use the <strong>tplayer</strong> shortcode attribute when you insert a Pop Up Archive media player. It will automatically include the full transcript of your audio. Example:
+<pre>
+[popuparchive audio_file_id=45048 item_id=38688 collection_id=3364 tplayer=1]
+</pre>
+                        </p>
+                        <!--
 						<div class="puawp_section_separator_1"></div>
 						<p><strong>Question: </strong></p>
 						<p><strong>Answer: </strong></p>
+                        -->
 					</div>
 				</div>
 			</div>
