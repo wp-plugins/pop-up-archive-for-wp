@@ -1,6 +1,7 @@
 <?php
-/** This is a static html page that is delivered with the PHP for the plugin. This can be modified in the future to be more dynamic **/
-/** This is just sample content to illustrate the usage of the HTML below **/
+// This is a static html page that is delivered with the PHP for the plugin.
+// This can be modified in the future to be more dynamic
+// This is just sample content to illustrate the usage of the HTML below
 /*
 <div class="wrap">
 	<div id="poststuff"><div id="post-body">

@@ -4,6 +4,7 @@
 /* @todo add a version check for both the plugin and the SDK */
 require_once 'includes/Services/Popuparchive.php';
 
+
 /**
  * Pop Up Archive WP Plugin display class for list of audio clips
  *
@@ -11,18 +12,18 @@ require_once 'includes/Services/Popuparchive.php';
  * @package   Display_PUAWP_Settings
  * @author    Thomas Crenshaw <thomas@circadigital.biz>
  * @copyright 2014 Thomas Crenshaw <thomas@circadigital.biz>
- * @license   
+ * @license
  * @link      https://circadigital.biz/
  *
  */
-function Display_PUAWP_Settings()
-{
+function Display_PUAWP_Settings() {
+
     /**
      * Error string
      *
      * @var string
      *
-     * @access public 
+     * @access public
      */
     $errors = '';
 
@@ -55,7 +56,7 @@ function Display_PUAWP_Settings()
 
     /**
      * Pop Up Archive application redirect URI base path
-     * 
+     *
      * @todo hack a way for the PUA OAuth system to work with WP query parameters
      *
      * @var string
@@ -66,7 +67,7 @@ function Display_PUAWP_Settings()
 
     /**
      * Pop Up Archive application redirect URI query path
-     * 
+     *
      * @todo hack a way for the PUA OAuth system to work with WP query parameters
      *
      * @var string
@@ -84,7 +85,7 @@ function Display_PUAWP_Settings()
      */
     $attached_file = '';
 
-    /** @todo: validate for audio item info */
+    /* @todo: validate for audio item info */
     if (isset($_POST['popuparchive_clear'])) {
         //add the data to the wp_options table
         $options = array(
@@ -118,7 +119,7 @@ function Display_PUAWP_Settings()
         }
 
         if (!$errors) {
-           //add the data to the wp_options table
+            //add the data to the wp_options table
             $options = array(
                 'puawp_client_id' => $puawp_client_id,
                 'puawp_client_secret' => $puawp_client_secret,
@@ -135,7 +136,7 @@ function Display_PUAWP_Settings()
         }
     }
 
-    /** getting the puawp options out of the database */
+    /* getting the puawp options out of the database */
     $puawp_settings = get_option('popuparchive_settings');
     $puawp_client_id = $puawp_settings['puawp_client_id'];
     $puawp_client_secret = $puawp_settings['puawp_client_secret'];
@@ -145,9 +146,11 @@ function Display_PUAWP_Settings()
     } else {
 
     }
-    /** verifying the existance of this variable when it is empty so error isn't displayed
-        Pop Up Archive Error: Could not process the request - Error code (0).
-    **/
+
+    /*
+     * verifying the existance of this variable when it is empty so error isn't displayed
+     * Pop Up Archive Error: Could not process the request - Error code (0).
+     * */
     ////$puawp_access_token = isset($puawp_settings['puawp_access_token'])?$puawp_settings['puawp_access_token']:'';
 ?>
 
@@ -226,32 +229,39 @@ Click the "Connect" button.
 <?php
 }
 
-function popuparchive_authenticate($puawp_options)
-{
+
+/**
+ *
+ *
+ * @param unknown $puawp_options
+ */
+function popuparchive_authenticate($puawp_options) {
     //get Pop Up Archive options
- //   $puawp_options = get_option('popuparchive_settings');
+    //   $puawp_options = get_option('popuparchive_settings');
     if ($puawp_options) {
         $puawp_client_id = $puawp_options['puawp_client_id'];
         $puawp_client_secret = $puawp_options['puawp_client_secret'];
-        /** @todo trap when there is no token returned */
+
+        // @todo trap when there is no token returned
         $puawp_access_token = $puawp_options['puawp_access_token'];
         $puawp_redir_uri = $puawp_options['puawp_redir_uri_base'].$puawp_options['puawp_redir_uri_query'];
     }
     $popuparchive = new Popuparchive_Services($puawp_client_id, $puawp_client_secret, $puawp_redir_uri);
- 
+
     if ($puawp_access_token == "") {
         //$params = array('scope' => 'non-expiring');
-//        $authorizeUrl = $popuparchive->getAuthorizeUrl($params);
+        //        $authorizeUrl = $popuparchive->getAuthorizeUrl($params);
         $authorizeUrl = $popuparchive->getAuthorizeUrl();
         echo '<br /><a id="puawp_connect_url" style="border-style:solid; padding:5px; border-color:orange;" href="'.$authorizeUrl.'">Click Here To Connect To Pop Up Archive</a>';
-        
-        if(isset($_GET['code'])) {
+
+        if (isset($_GET['code'])) {
             try {
-                /** @todo: - use isset to check if "code" param below exists */
-//                $post_data = array();
-//                $curl_opts = array(CURLOPT_SSL_VERIFYPEER => false, CURLOPT_SSL_VERIFYHOST => false,);
-//                $accessToken = $popuparchive->accessToken($_GET['code'], $post_data, $curl_opts);
-//                $accessToken = $popuparchive->accessToken($_GET['code'], $post_data);
+
+                // @todo: - use isset to check if "code" param below exists */
+                //                $post_data = array();
+                //                $curl_opts = array(CURLOPT_SSL_VERIFYPEER => false, CURLOPT_SSL_VERIFYHOST => false,);
+                //                $accessToken = $popuparchive->accessToken($_GET['code'], $post_data, $curl_opts);
+                //                $accessToken = $popuparchive->accessToken($_GET['code'], $post_data);
                 $accessToken = $popuparchive->simpleAccessTokenRequest($_GET['code']);
                 echo puawp_jquery_snippet();
             } catch (Popuparchive_Services_Invalid_Http_Response_Code_Exception $e) {
@@ -265,11 +275,11 @@ function popuparchive_authenticate($puawp_options)
         $puawp_redir_uri_base = site_url().'/wp-admin/admin.php';
         $puawp_redir_uri_query = '?page=puawp_options';
         $param = array('puawp_client_id' => $puawp_client_id,
-                    'puawp_client_secret' => $puawp_client_secret,
-                    'puawp_access_token' => $accessToken['access_token'],
-                    'puawp_redir_uri_base' => $puawp_redir_uri_base,
-                    'puawp_redir_uri_query' => $puawp_redir_uri_query
-                    );
+            'puawp_client_secret' => $puawp_client_secret,
+            'puawp_access_token' => $accessToken['access_token'],
+            'puawp_redir_uri_base' => $puawp_redir_uri_base,
+            'puawp_redir_uri_query' => $puawp_redir_uri_query
+        );
         update_option('popuparchive_settings', $param); //store the results in WP options table
         $popuparchive->setAccessToken($accessToken['access_token']);
     } elseif ($puawp_access_token) {
@@ -277,8 +287,13 @@ function popuparchive_authenticate($puawp_options)
     }
 }
 
-function puawp_jquery_snippet()
-{
+
+/**
+ *
+ *
+ * @return unknown
+ */
+function puawp_jquery_snippet() {
     $code = '<script type="text/javascript">
                 jQuery.noConflict();
                 jQuery(document).ready(function ($) {
@@ -297,4 +312,3 @@ function puawp_jquery_snippet()
 
     return $code;
 }
-?>
