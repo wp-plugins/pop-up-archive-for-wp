@@ -5,15 +5,14 @@
  * This class is derived from the WP_List_Table class (wp-admin/includes/class-wp-list-table.php)
  *
  * @category  Services
- * @package   Popuparchive_WP_List_Table
- * @author    Thomas Crenshaw <thomas@circadigital.biz>
  * @copyright 2014 Thomas Crenshaw <thomas@circadigital.biz>
  * @license
  * @link      https://circadigital.biz/
+ * @author    Thomas Crenshaw <thomas@circadigital.biz>
+ * @package   Popuparchive_WP_List_Table
  */
+class Popuparchive_WP_List_Table {
 
-class Popuparchive_WP_List_Table
-{
     /**
      * errors array
      *
@@ -72,6 +71,7 @@ class Popuparchive_WP_List_Table
      * @access private
      */
     private $_actions;
+
     /**
      * pagination variable
      *
@@ -85,17 +85,17 @@ class Popuparchive_WP_List_Table
     /**
      * Constructor. The child class should call this constructor from its own constructor
      *
-     ** @param array $args An associative array with information about the current table
+     * * @param array $args An associative array with information about the current table
      *
      * @access protected
+     * @param unknown $args (optional)
      */
-    protected function __construct( $args = array() )
-    {
+    protected function __construct( $args = array() ) {
         $args = wp_parse_args( $args, array(
-            'plural' => '',
-            'singular' => '',
-            'ajax' => false
-        ) );
+                'plural' => '',
+                'singular' => '',
+                'ajax' => false
+            ) );
 
         $screen = get_current_screen();
 
@@ -115,20 +115,21 @@ class Popuparchive_WP_List_Table
         }
     }
 
+
     /**
      * Parent function for determine what an AJAX user can do
      *
-     * @param
+     * @param unknown
      *
      * @access public
      * @abstract
      */
-    public function ajax_user_can()
-    {
+    public function ajax_user_can() {
         die( 'function Popuparchive_WP_List_Table::ajax_user_can() must be over-ridden in a sub-class.' );
     }
 
-   /**
+
+    /**
      * Prepares the list of items for displaying.
      *
      * @uses WP_List_Table::set_pagination_args()
@@ -136,26 +137,25 @@ class Popuparchive_WP_List_Table
      * @access public
      * @abstract
      */
-    public function prepare_items()
-    {
+    public function prepare_items() {
         die( 'function Popuparchive_WP_List_Table::prepare_items() must be over-ridden in a sub-class.' );
     }
+
 
     /**
      * An internal method that sets all the necessary pagination arguments
      *
-     * @param array $args An associative array with information about the pagination
      *
      * @access protected
+     * @param array   $args An associative array with information about the pagination
      */
-    protected function set_pagination_args($args)
-    {
+    protected function set_pagination_args($args) {
         $args = wp_parse_args( $args, array(
-			'collect_id' => 0,
-            'total_items' => 0,
-            'total_pages' => 0,
-            'per_page' => 0,
-        ) );
+                'collect_id' => 0,
+                'total_items' => 0,
+                'total_pages' => 0,
+                'per_page' => 0,
+            ) );
 
         if ( !$args['total_pages'] && $args['per_page'] > 0 )
             $args['total_pages'] = ceil( $args['total_items'] / $args['per_page'] );
@@ -165,27 +165,29 @@ class Popuparchive_WP_List_Table
             wp_redirect( add_query_arg( 'paged', $args['total_pages'] ) );
             exit;
         }
-			//print_r($args);
-			$args['collect_id']  =  $args['collect_id'];
+        //print_r($args);
+        $args['collect_id']  =  $args['collect_id'];
         $this->_pagination_args = $args;
     }
+
 
     /**
      *  Access the pagination args
      *
-     * @param string $key page number
      *
-     * @return array
      *               @access public
+     *
+     * @param string  $key page number
+     * @return array
      */
-    public function get_pagination_arg($key)
-    {
+    public function get_pagination_arg($key) {
         if ( 'page' == $key )
             return $this->get_pagenum();
 
         if ( isset( $this->_pagination_args[$key] ) )
             return $this->_pagination_args[$key];
     }
+
 
     /**
      *  Whether the table has items to display or not
@@ -194,21 +196,21 @@ class Popuparchive_WP_List_Table
      *
      * @return bool
      */
-    public function has_items()
-    {
-       // return !empty( $this->items );
-	   return $this->items;
+    public function has_items() {
+        // return !empty( $this->items );
+        return $this->items;
     }
+
 
     /**
      * Message to be displayed when there are no items
      *
      * @access public
      */
-    public function no_items()
-    {
+    public function no_items() {
         _e( 'No items found.' );
     }
+
 
     /**
      * Display the search box.
@@ -217,9 +219,10 @@ class Popuparchive_WP_List_Table
      * @param integer input_id id of the item that is being searched
      *
      * @access public
+     * @param unknown $text
+     * @param unknown $input_id
      */
-    public function search_box($text, $input_id)
-    {
+    public function search_box($text, $input_id=0) {
         if ( empty( $_REQUEST['s'] ) && !$this->has_items() )
             return;
 
@@ -229,16 +232,16 @@ class Popuparchive_WP_List_Table
             echo '<input type="hidden" name="orderby" value="' . esc_attr( $_REQUEST['orderby'] ) . '" />';
         if ( ! empty( $_REQUEST['order'] ) )
             echo '<input type="hidden" name="order" value="' . esc_attr( $_REQUEST['order'] ) . '" />';
-     $current_page1 = basename($_SERVER['PHP_SELF'],'.php');
-	if( in_array( $current_page1, array( 'post.php', 'media-upload', 'page-new.php', 'post-new.php' ) ) ){
+        $current_page1 = basename($_SERVER['PHP_SELF'], '.php');
+        if ( in_array( $current_page1, array( 'post.php', 'media-upload', 'page-new.php', 'post-new.php' ) ) ) {
 ?>
     <form action="media-upload.php?chromeless=1&amp;post_id=<?php echo $post_id; ?>&amp;tab=popuparchive_wp" method="post">
 <?php
-    } else {
+        } else {
 ?>
     <form action="admin.php?page=puawp_options&tab=puawp_display_page" method="post" id="modal-list">
 <?php
-    } ?> 
+        } ?>
     <label class="screen-reader-text" for="<?php echo $input_id ?>"><?php echo $text; ?>:</label>
     <input type="hidden" value="<?php echo  $this->_pagination_args['collect_id'] ?>" name="postcid" />
     <input type="text" id="<?php echo $input_id ?>" name="s" value="<?php _admin_search_query(); ?>" />
@@ -246,6 +249,7 @@ class Popuparchive_WP_List_Table
 </form>
 <?php
     }
+
 
     /**
      * Get an associative array ( id => link ) with the list
@@ -255,18 +259,17 @@ class Popuparchive_WP_List_Table
      *
      * @return array
      */
-    protected function get_views()
-    {
+    protected function get_views() {
         return array();
     }
+
 
     /**
      * Display the list of views available on this table.
      *
      * @access public
      */
-    public function views()
-    {
+    public function views() {
         $screen = get_current_screen();
 
         $views = $this->get_views();
@@ -283,6 +286,7 @@ class Popuparchive_WP_List_Table
         echo "</ul>";
     }
 
+
     /**
      * Get an associative array ( option_name => option_title ) with the list
      * of bulk actions available on this table.
@@ -291,18 +295,17 @@ class Popuparchive_WP_List_Table
      *
      * @return array
      */
-    protected function get_bulk_actions()
-    {
+    protected function get_bulk_actions() {
         return array();
     }
+
 
     /**
      * Display the bulk actions dropdown.
      *
      * @access public
      */
-    public function bulk_actions()
-    {
+    public function bulk_actions() {
         $screen = get_current_screen();
 
         if ( is_null( $this->_actions ) ) {
@@ -333,17 +336,17 @@ class Popuparchive_WP_List_Table
         echo "\n";
     }
 
-   /**
+
+    /**
      * Get the current action selected from the bulk actions dropdown.
      *
-     * @return mixed
      *
      * @access public
      *
+     * @return mixed
      * @return string|bool The action name or False if no action was selected
      */
-    public function current_action()
-    {
+    public function current_action() {
         if ( isset( $_REQUEST['action'] ) && -1 != $_REQUEST['action'] )
             return $_REQUEST['action'];
 
@@ -353,16 +356,16 @@ class Popuparchive_WP_List_Table
         return false;
     }
 
+
     /**
      * Generate row actions div
      *
-     * @param array $actions        The list of actions
-     * @param bool  $always_visible Whether the actions should be always visible
      *
+     * @param array   $actions        The list of actions
+     * @param bool    $always_visible (optional) Whether the actions should be always visible
      * @return string
      */
-    public function row_actions($actions, $always_visible = false)
-    {
+    public function row_actions($actions, $always_visible = false) {
         $action_count = count( $actions );
         $i = 0;
 
@@ -380,15 +383,15 @@ class Popuparchive_WP_List_Table
         return $out;
     }
 
+
     /**
      * Display a monthly dropdown for filtering items
      *
-     * @param string $post_type type of post being managed
      *
      * @access public
+     * @param string  $post_type type of post being managed
      */
-    public function months_dropdown($post_type)
-    {
+    public function months_dropdown($post_type) {
         global $wpdb, $wp_locale;
 
         $months = $wpdb->get_results( $wpdb->prepare( "
@@ -426,15 +429,15 @@ class Popuparchive_WP_List_Table
 <?php
     }
 
-   /**
+
+    /**
      * Display a view switcher
      *
-     * @param string $current_mode 'List View' or 'Excerpt View'
      *
      * @access public
+     * @param string  $current_mode 'List View' or 'Excerpt View'
      */
-    public function view_switcher($current_mode)
-    {
+    public function view_switcher($current_mode) {
         $modes = array(
             'list'    => __( 'List View' ),
             'excerpt' => __( 'Excerpt View' )
@@ -444,25 +447,25 @@ class Popuparchive_WP_List_Table
         <input type="hidden" name="mode" value="<?php echo esc_attr( $current_mode ); ?>" />
         <div class="view-switch">
 <?php
-            foreach ($modes as $mode => $title) {
-                $class = ( $current_mode == $mode ) ? 'class="current"' : '';
-                echo "<a href='" . esc_url( add_query_arg( 'mode', $mode, $_SERVER['REQUEST_URI'] ) ) . "' $class><img id='view-switch-$mode' src='" . esc_url( includes_url( 'images/blank.gif' ) ) . "' width='20' height='20' title='$title' alt='$title' /></a>\n";
-            }
-        ?>
+        foreach ($modes as $mode => $title) {
+            $class = ( $current_mode == $mode ) ? 'class="current"' : '';
+            echo "<a href='" . esc_url( add_query_arg( 'mode', $mode, $_SERVER['REQUEST_URI'] ) ) . "' $class><img id='view-switch-$mode' src='" . esc_url( includes_url( 'images/blank.gif' ) ) . "' width='20' height='20' title='$title' alt='$title' /></a>\n";
+        }
+?>
         </div>
 <?php
     }
 
-   /**
+
+    /**
      * Display a comment count bubble
      *
-     * @param int $post_id
-     * @param int $pending_comments
      *
      * @access protected
+     * @param int     $post_id
+     * @param int     $pending_comments
      */
-    protected function comments_bubble($post_id, $pending_comments)
-    {
+    protected function comments_bubble($post_id, $pending_comments) {
         $pending_phrase = sprintf( __( '%s pending' ), number_format( $pending_comments ) );
 
         if ( $pending_comments )
@@ -474,6 +477,7 @@ class Popuparchive_WP_List_Table
             echo '</strong>';
     }
 
+
     /**
      * Get the current page number
      *
@@ -481,28 +485,27 @@ class Popuparchive_WP_List_Table
      *
      * @return int
      */
-    protected function get_pagenum()
-    {
+    protected function get_pagenum() {
         $pagenum = isset( $_REQUEST['paged'] ) ? absint( $_REQUEST['paged'] ) : 0;
 
-        if( isset( $this->_pagination_args['total_pages'] ) && $pagenum > $this->_pagination_args['total_pages'] )
+        if ( isset( $this->_pagination_args['total_pages'] ) && $pagenum > $this->_pagination_args['total_pages'] )
             $pagenum = $this->_pagination_args['total_pages'];
 
         return max( 1, $pagenum );
     }
 
+
     /**
      * Get number of items to display on a single page
      *
-     * @param string|int $option  number of items to display
-     * @param int        $default (Optional) default number of items to show
      *
      * @access public
      *
+     * @param string|int $option  number of items to display
+     * @param int     $default (optional) (Optional) default number of items to show
      * @return int
      */
-    public function get_items_per_page($option, $default = 20)
-    {
+    public function get_items_per_page($option, $default = 20) {
         $per_page = (int) get_user_option( $option );
         if ( empty( $per_page ) || $per_page < 1 )
             $per_page = $default;
@@ -510,15 +513,15 @@ class Popuparchive_WP_List_Table
         return (int) apply_filters( $option, $per_page );
     }
 
+
     /**
      * Display the pagination.
      *
-     * @param int $which the page that is currently being displayed(?)
      *
      * @access protected
+     * @param int     $which the page that is currently being displayed(?)
      */
-    protected function pagination($which)
-    {
+    protected function pagination($which) {
         if ( empty( $this->_pagination_args ) )
             return;
 
@@ -550,19 +553,19 @@ class Popuparchive_WP_List_Table
         $page_links[] = sprintf( "<a class='%s' title='%s' href='%s'>%s</a>",
             'prev-page' . $disable_first,
             esc_attr__( 'Go to the previous page' ),
-            esc_url( add_query_arg(array('gets' => $_POST['s'],'cid' => $this->_pagination_args['collect_id'],'paged'=> max( 1, $current-1 )), $current_url ) ),
-			'&lsaquo;'
+            esc_url( add_query_arg(array('gets' => $_POST['s'], 'cid' => $this->_pagination_args['collect_id'], 'paged'=> max( 1, $current-1 )), $current_url ) ),
+            '&lsaquo;'
         );
 
-      //  if ( 'bottom' == $which )
+        //  if ( 'bottom' == $which )
         //    $html_current_page = $current;
         //else
-            $html_current_page = sprintf( "<input class='current-page' title='%s' type='text' name='%s' value='%s' size='%d' />",
-                esc_attr__( 'Current page' ),
-                esc_attr( 'paged' ),
-                $current,
-                strlen( $total_pages )
-            );
+        $html_current_page = sprintf( "<input class='current-page' title='%s' type='text' name='%s' value='%s' size='%d' />",
+            esc_attr__( 'Current page' ),
+            esc_attr( 'paged' ),
+            $current,
+            strlen( $total_pages )
+        );
 
         $html_total_pages = sprintf( "<span class='total-pages'>%s</span>", number_format_i18n( $total_pages ) );
         $page_links[] = '<span class="paging-input">' . sprintf( _x( '%1$s of %2$s', 'paging' ), $html_current_page, $html_total_pages ) . '</span>';
@@ -570,29 +573,30 @@ class Popuparchive_WP_List_Table
         $page_links[] = sprintf( "<a class='%s' title='%s' href='%s'>%s</a>",
             'next-page' . $disable_last,
             esc_attr__( 'Go to the next page' ),
-            esc_url( add_query_arg( array('gets' => $_POST['s'],'cid' => $this->_pagination_args['collect_id'],'paged'=> min( $total_pages, $current+1 )), $current_url ) ),
+            esc_url( add_query_arg( array('gets' => $_POST['s'], 'cid' => $this->_pagination_args['collect_id'], 'paged'=> min( $total_pages, $current+1 )), $current_url ) ),
             '&rsaquo;'
         );
 
         $page_links[] = sprintf( "<a class='%s' title='%s' href='%s'>%s</a>",
             'last-page' . $disable_last,
             esc_attr__( 'Go to the last page' ),
-            esc_url( add_query_arg(array('gets' => $_POST['s'],'cid' => $this->_pagination_args['collect_id'], 'paged'=> $total_pages), $current_url ) ),
+            esc_url( add_query_arg(array('gets' => $_POST['s'], 'cid' => $this->_pagination_args['collect_id'], 'paged'=> $total_pages), $current_url ) ),
             '&raquo;'
         );
-//print_r($page_links);
+        //print_r($page_links);
         $output .= "\n<span class='pagination-links'>" . join( "\n", $page_links ) . '</span>';
 
         if ( $total_pages )
             $page_class = $total_pages < 2 ? ' one-page' : '';
         else
             $page_class = ' no-pages';
-			
-			echo $output;
+
+        echo $output;
 
         $this->_pagination = "<div class='tablenav-pages{$page_class}'>$output</div>";
 
-          }
+    }
+
 
     /**
      * Get a list of columns. The format is:
@@ -602,12 +606,12 @@ class Popuparchive_WP_List_Table
      *
      * @return array
      */
-    protected function get_columns()
-    {
+    protected function get_columns() {
         die( 'function Popuparchive_WP_List_Table::get_columns() must be over-ridden in a sub-class.' );
     }
 
-   /**
+
+    /**
      * Get a list of sortable columns. The format is:
      * 'internal-name' => 'orderby'
      * or
@@ -619,20 +623,19 @@ class Popuparchive_WP_List_Table
      *
      * @return array
      */
-    protected function get_sortable_columns()
-    {
+    protected function get_sortable_columns() {
         return array();
     }
 
-   /**
+
+    /**
      * Get a list of all, hidden and sortable columns, with filter applied
      *
      * @access protected
      *
      * @return array
      */
-    protected function get_column_info()
-    {
+    protected function get_column_info() {
         if ( isset( $this->_column_headers ) )
             return $this->_column_headers;
 
@@ -660,32 +663,32 @@ class Popuparchive_WP_List_Table
         return $this->_column_headers;
     }
 
-   /**
+
+    /**
      * Return number of visible columns
      *
-     * @param
+     * @param unknown
      *
      * @access public
      *
      * @return int
      */
-    public function get_column_count()
-    {
+    public function get_column_count() {
         list ( $columns, $hidden ) = $this->get_column_info();
         $hidden = array_intersect( array_keys( $columns ), array_filter( $hidden ) );
 
         return count( $columns ) - count( $hidden );
     }
 
+
     /**
      * Print column headers, accounting for hidden and sortable columns.
      *
-     * @param bool $with_id Whether to set the id attribute or not
      *
      * @access protected
+     * @param bool    $with_id (optional) Whether to set the id attribute or not
      */
-    protected function print_column_headers($with_id = true)
-    {
+    protected function print_column_headers($with_id = true) {
         $screen = get_current_screen();
 
         list( $columns, $hidden, $sortable ) = $this->get_column_info();
@@ -742,24 +745,24 @@ class Popuparchive_WP_List_Table
         }
     }
 
+
     /**
      * Display the table
      *
      * @access public
      */
-    public function display()
-    {
+    public function display() {
         extract( $this->_args );
         $this->display_tablenav( 'top' );
-		
+
 ?>
 <table class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>" cellspacing="0">
     <thead>
     <tr>
-        <?php 
-		
-		 $this->print_column_headers(); 
-	 ?>
+        <?php
+
+        $this->print_column_headers();
+?>
     </tr>
     </thead>
 
@@ -777,25 +780,26 @@ class Popuparchive_WP_List_Table
         $this->display_tablenav( 'bottom' );
     }
 
-   /**
+
+    /**
      * function that defines the table classes
      *
      * @access public
+     * @return unknown
      */
-    public function get_table_classes()
-    {
+    public function get_table_classes() {
         return array( 'widefat', 'fixed', $this->_args['plural'] );
     }
 
-   /**
+
+    /**
      * Generate the table navigation above or below the table
      *
-     * @param string $which variable that defines top or bottom nav for the table
      *
      * @access public
+     * @param string  $which variable that defines top or bottom nav for the table
      */
-    public function display_tablenav($which)
-    {
+    public function display_tablenav($which) {
         if ( 'top' == $which )
             wp_nonce_field( 'bulk-' . $this->_args['plural'] );
 ?>
@@ -807,7 +811,7 @@ class Popuparchive_WP_List_Table
         <div style="float:right;">
         <?php $this->search_box("Search"); ?></div>
 <?php
-     //   $this->extra_tablenav( $which );
+        //   $this->extra_tablenav( $which );
         $this->pagination( $which );
 ?>
 
@@ -816,14 +820,16 @@ class Popuparchive_WP_List_Table
 <?php
     }
 
+
     /**
      * Extra controls to be displayed between bulk actions and pagination
      *
-     * @param string $which variable that defines top or bottom nav for the table
      *
      * @access public
+     * @param string  $which variable that defines top or bottom nav for the table
      */
     public function extra_tablenav($which) {}
+
 
     /**
      * Generate the <tbody> part of the table
@@ -831,8 +837,7 @@ class Popuparchive_WP_List_Table
      *
      * @access protected
      */
-    protected function display_rows_or_placeholder()
-    {
+    protected function display_rows_or_placeholder() {
         if ( $this->has_items() ) {
             $this->display_rows();
         } else {
@@ -843,28 +848,28 @@ class Popuparchive_WP_List_Table
         }
     }
 
+
     /**
      * Generate the table rows
      *
      * @access protected
      */
-    protected function display_rows()
-    {
-//        d($this->items);
+    protected function display_rows() {
+        //        d($this->items);
         foreach ($this->items as $item) {
             $this->single_row( $item );
         }
     }
 
+
     /**
      * Generates content for a single row of the table
      *
-     * @param object $item The current item
      *
      * @access protected
+     * @param object  $item The current item
      */
-    protected function single_row($item)
-    {
+    protected function single_row($item) {
         static $row_class = '';
         $row_class = ( $row_class == '' ? ' class="alternate"' : '' );
 
@@ -873,17 +878,17 @@ class Popuparchive_WP_List_Table
         echo '</tr>';
     }
 
+
     /**
      * Generates the columns for a single row of the table
      *
      * Pop Up Archive Override Alert --
      *
-     * @param object $item The current item
      *
      * @access protected
+     * @param object  $item The current item
      */
-    protected function single_row_columns($item)
-    {
+    protected function single_row_columns($item) {
         list( $columns, $hidden ) = $this->get_column_info();
 
         foreach ($columns as $column_name => $column_display_name) {
@@ -894,54 +899,52 @@ class Popuparchive_WP_List_Table
                 $style = ' style="display:none;"';
 
             $attributes = "$class$style";
-			$current_page1 = basename($_SERVER['PHP_SELF'],'.php');
-			//echo $current_page1;
-			if ($column_name=="tags")
-			{
-				if ( method_exists( $this, 'column_' . $column_name ) ) {
-					echo "<td $attributes>";
-					echo call_user_func( array( $this, 'column_' . $column_name ), $item );
-					$tags = str_replace('"','', call_user_func( array( $this, 'column_' . $column_name ), $item ));
-					$tags1 = str_replace("'","\'", $tags);
-					
-					if( in_array( $current_page1, array( 'post.php', 'media-upload', 'page-new.php', 'post-new.php' ) ) ){
+            $current_page1 = basename($_SERVER['PHP_SELF'], '.php');
+            //echo $current_page1;
+            if ($column_name=="tags") {
+                if ( method_exists( $this, 'column_' . $column_name ) ) {
+                    echo "<td $attributes>";
+                    echo call_user_func( array( $this, 'column_' . $column_name ), $item );
+                    $tags = str_replace('"', '', call_user_func( array( $this, 'column_' . $column_name ), $item ));
+                    $tags1 = str_replace("'", "\'", $tags);
 
-					echo '<br /><input type="button" class="button-primary" onclick="SendToTags(\''.$tags1.'\')" title="add shortcode to post" value="Add Tags" class="upload-button"/>';
-					}
-					echo '</td>';
-				} else {
-					echo "<td $attributes>";
-					echo $this->column_default( $item, $column_name );
-					if( in_array( $current_page1, array( 'post.php', 'media-upload', 'page-new.php', 'post-new.php' ) ) ){
+                    if ( in_array( $current_page1, array( 'post.php', 'media-upload', 'page-new.php', 'post-new.php' ) ) ) {
 
-					echo '<input type="button" onclick="SendToTags(\''.$this->column_default( $item, $column_name ).'\')" title="add shortcode to post" value="Add Tags" class="upload-button"/>';
-					}
-					echo '</td>';
-				}	
-			
-			}
-			else
-			{
-				if ( method_exists( $this, 'column_' . $column_name ) ) {
-					echo "<td $attributes>";
-					echo call_user_func( array( $this, 'column_' . $column_name ), $item );
-					echo "</td>";
-				} else {
-					echo "<td $attributes>";
-					echo $this->column_default( $item, $column_name );
-					echo "</td>";
-				}
-			}
+                        echo '<br /><input type="button" class="button-primary" onclick="SendToTags(\''.$tags1.'\')" title="add shortcode to post" value="Add Tags" class="upload-button"/>';
+                    }
+                    echo '</td>';
+                } else {
+                    echo "<td $attributes>";
+                    echo $this->column_default( $item, $column_name );
+                    if ( in_array( $current_page1, array( 'post.php', 'media-upload', 'page-new.php', 'post-new.php' ) ) ) {
+
+                        echo '<input type="button" onclick="SendToTags(\''.$this->column_default( $item, $column_name ).'\')" title="add shortcode to post" value="Add Tags" class="upload-button"/>';
+                    }
+                    echo '</td>';
+                }
+
+            }
+            else {
+                if ( method_exists( $this, 'column_' . $column_name ) ) {
+                    echo "<td $attributes>";
+                    echo call_user_func( array( $this, 'column_' . $column_name ), $item );
+                    echo "</td>";
+                } else {
+                    echo "<td $attributes>";
+                    echo $this->column_default( $item, $column_name );
+                    echo "</td>";
+                }
+            }
         }
     }
+
 
     /**
      * Handle an incoming ajax request (called from admin-ajax.php)
      *
      * @access public
      */
-    public function ajax_response()
-    {
+    public function ajax_response() {
         $this->prepare_items();
 
         extract( $this->_args );
@@ -968,15 +971,15 @@ class Popuparchive_WP_List_Table
         die( json_encode( $response ) );
     }
 
+
     /**
      * Send required variables to JavaScript land
-     * 
+     *
      * This is the previous version of _js_vars
      *
      * @access private
      */
-    private function _old_js_vars()
-    {
+    private function _old_js_vars() {
         $current_screen = get_current_screen();
 
         $args = array(
@@ -990,6 +993,7 @@ class Popuparchive_WP_List_Table
         printf( "<script type='text/javascript'>list_args = %s;</script>\n", json_encode( $args ) );
     }
 
+
     /**
      * Send required variables to JavaScript land
      *
@@ -997,9 +1001,8 @@ class Popuparchive_WP_List_Table
      *
      * @access private
      */
-    private function _js_vars()
-    {
-         $args = array(
+    private function _js_vars() {
+        $args = array(
             'class'  => get_class( $this ),
             'screen' => array(
                 'id'   => $this->screen->id,
@@ -1008,5 +1011,6 @@ class Popuparchive_WP_List_Table
         );
         printf( "<script type='text/javascript'>list_args = %s;</script>\n", json_encode( $args ) );
     }
+
+
 }
-?>
